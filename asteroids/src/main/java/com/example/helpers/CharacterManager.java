@@ -25,12 +25,13 @@ public class CharacterManager {
         this.frameWidth = frameWidth;
         this.frameHeight = frameHeight;
         this.ship = new Ship(frameWidth / 2, frameHeight / 2);
-        this.asteroids = generateAsteroids();
+        this.asteroids = generateStartingAsteroids();
         this.projectiles = new ArrayList<>();
     }
 
-    private List<Character> generateAsteroids() {
+    private List<Character> generateStartingAsteroids() {
         List<Character> asteroids = new ArrayList<>();
+
         for (int i = 0; i < 5; i++) {
             Random random = new Random();
             Asteroid asteroid = new Asteroid(random.nextInt(this.frameWidth / 3), random.nextInt(this.frameHeight));
@@ -47,8 +48,10 @@ public class CharacterManager {
 
         projectile.getCharacter().setRotate(getShipCharacter().getRotate());
         projectiles.add(projectile);
+
         projectile.accelerate();
         projectile.setMovement(projectile.getMovement().normalize().multiply(3));
+
         return projectile;
     }
 
@@ -80,7 +83,7 @@ public class CharacterManager {
         return new ArrayList<>();
     }
 
-    public Polygon generateAsteroidRandomly() {
+    public Polygon generateRandomAsteroid() {
         if (Math.random() < 0.005) {
             Asteroid asteroid = new Asteroid(this.frameWidth, this.frameHeight);
             if (!asteroid.collide(ship)) {
