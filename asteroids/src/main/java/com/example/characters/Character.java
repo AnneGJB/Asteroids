@@ -57,6 +57,10 @@ public abstract class Character {
         this.movement = this.movement.add(changeX, changeY);
     }
 
+    public void decelerate() {
+        this.movement = this.movement.subtract(this.movement.getX() / 25, this.movement.getY() / 25);
+    }
+
     public boolean collide(Character other) {
         Shape collisionArea = Shape.intersect(this.character, other.getCharacter());
         return collisionArea.getBoundsInLocal().getWidth() != -1;

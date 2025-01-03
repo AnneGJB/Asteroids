@@ -87,6 +87,10 @@ public class Game {
             characterManager.accelerateShip();
         }
 
+        if (pressedKeys.getOrDefault(KeyCode.DOWN, false)) {
+            characterManager.decelerateShip();
+        }
+
         if (pressedKeys.getOrDefault(KeyCode.SPACE, false) && characterManager.getProjectiles().size() < 3) {
             Projectile projectile = characterManager.generateProjectile();
             this.pane.getChildren().add(projectile.getCharacter());

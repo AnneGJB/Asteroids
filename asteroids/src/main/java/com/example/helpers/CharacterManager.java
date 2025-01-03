@@ -106,6 +106,10 @@ public class CharacterManager {
         this.ship.accelerate();
     }
 
+    public void decelerateShip() {
+        this.ship.decelerate();
+    }
+
     public Polygon getShipCharacter() {
         return this.ship.getCharacter();
     }
