@@ -24,6 +24,7 @@ public class Game {
     private Pane pane;
     private Text text;
     private AtomicInteger points;
+    private Runnable gameOverAction;
 
     public Game(int frameWidth, int frameHeight) {
         this.frameWidth = frameWidth;
@@ -66,6 +67,7 @@ public class Game {
 
                 if (characterManager.shipCollisionOccured()) {
                     stop();
+                    runGameOver();
                 }
 
                 handleProjectileCollision();
@@ -114,6 +116,14 @@ public class Game {
 
     public Scene getScene() {
         return this.scene;
+    }
+
+    public void setOnGameOver(Runnable action) {
+        this.gameOverAction = action;
+    }
+
+    private void runGameOver() {
+        this.gameOverAction.run();
     }
 
 }
