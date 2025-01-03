@@ -1,6 +1,8 @@
-package com.example;
+package com.example.characters;
 
 import java.util.Random;
+
+import com.example.helpers.PolygonFactory;
 
 public class Asteroid extends Character{
     private double rotationalMovement;

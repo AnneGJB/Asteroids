@@ -1,4 +1,6 @@
-package com.example;
+package com.example.characters;
+
+import com.example.AsteroidsApplication;
 
 import javafx.geometry.Point2D;
 import javafx.scene.shape.Polygon;
@@ -7,10 +9,8 @@ import javafx.scene.shape.Shape;
 public abstract class Character {
     private Polygon character;
     private Point2D movement;
-    private boolean isAlive;
 
     public Character(Polygon polygon, int x, int y) {
-        this.isAlive = true;
         this.character = polygon;
         this.character.setTranslateX(x);
         this.character.setTranslateY(y);
@@ -73,14 +73,6 @@ public abstract class Character {
 
     public void setMovement(Point2D movement) {
         this.movement = movement;
-    }
-
-    public void setAlive(boolean isAlive) {
-        this.isAlive = isAlive;
-    }
-
-    public boolean isAlive() {
-        return this.isAlive;
     }
 
 }

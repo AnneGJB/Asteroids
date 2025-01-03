@@ -1,18 +1,19 @@
 package com.example;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Collectors;
+
+import com.example.characters.Projectile;
+import com.example.helpers.CharacterManager;
 
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.Pane;
+import javafx.scene.shape.Polygon;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
@@ -28,28 +29,17 @@ public class AsteroidsApplication extends Application {
     public void start(Stage window) {
         Map<KeyCode, Boolean> pressedKeys = new HashMap<>();
         Pane pane = new Pane();
-        pane.setPrefSize(WIDTH, HEIGHT);
-
         Text text = new Text(10, 20, "Points: 0");
-        pane.getChildren().add(text);
-
         AtomicInteger points = new AtomicInteger();
-
-        Ship ship = new Ship(WIDTH / 2, HEIGHT / 2);
-        List<Character> asteroids = new ArrayList<>();
-        for (int i = 0; i < 5; i++) {
-            Random random = new Random();
-            Asteroid asteroid = new Asteroid(random.nextInt(WIDTH / 3), random.nextInt(HEIGHT));
-            asteroids.add(asteroid);
-        }
-
-        List<Character> projectiles = new ArrayList<>();
-
-        pane.getChildren().add(ship.getCharacter());
-        asteroids.forEach(asteroid -> pane.getChildren().add(asteroid.getCharacter()));
+        CharacterManager characterManager = new CharacterManager(WIDTH, HEIGHT);
+        
+        pane.setPrefSize(WIDTH, HEIGHT);
+        pane.getChildren().add(text);
+        pane.getChildren().add(characterManager.getShipCharacter());
+        pane.getChildren().addAll(characterManager.getAsteroidCharacters());
 
         Scene scene = new Scene(pane);
-
+        
         scene.setOnKeyPressed(event -> {
             pressedKeys.put(event.getCode(), Boolean.TRUE);
         });
@@ -62,77 +52,45 @@ public class AsteroidsApplication extends Application {
             @Override
             public void handle(long now) {
                 if (pressedKeys.getOrDefault(KeyCode.LEFT, false)) {
-                    ship.turnLeft();
+                    characterManager.turnShipLeft();
                 }
 
                 if (pressedKeys.getOrDefault(KeyCode.RIGHT, false)) {
-                    ship.turnRight();
+                    characterManager.turnShipRight();
                 }
 
                 if (pressedKeys.getOrDefault(KeyCode.UP, false)) {
-                    ship.accelerate();
+                    characterManager.accelerateShip();
                 }
 
-                if (pressedKeys.getOrDefault(KeyCode.SPACE, false) && projectiles.size() < 3) {
-                    Projectile projectile = new Projectile(
-                            (int) ship.getCharacter().getTranslateX(),
-                            (int) ship.getCharacter().getTranslateY());
-                            
-                    projectile.getCharacter().setRotate(ship.getCharacter().getRotate());
-
-                    projectiles.add(projectile);
-
-                    projectile.accelerate();
-                    projectile.setMovement(projectile.getMovement().normalize().multiply(3));
-
+                if (pressedKeys.getOrDefault(KeyCode.SPACE, false) && characterManager.getProjectiles().size() < 3) {
+                    Projectile projectile = characterManager.generateProjectile();
                     pane.getChildren().add(projectile.getCharacter());
                 }
 
-                ship.move();
-                asteroids.forEach(asteroid -> asteroid.move());
-                projectiles.forEach(projectile -> projectile.move());
+                characterManager.moveAllCharacters();
 
-                asteroids.forEach(asteroid -> {
-                    if (ship.collide(asteroid)) {
-                        stop();
-                    }
-                });
-
-                projectiles.forEach(projectile -> {
-                    asteroids.forEach(asteroid -> {
-                        if (projectile.collide(asteroid)) {
-                            projectile.setAlive(false);
-                            asteroid.setAlive(false);
-                            text.setText("Points: " + points.addAndGet(1000));
-                        }
-                    });
-                });
-
-                removeCharacter(projectiles, pane);
-                removeCharacter(asteroids, pane);
-
-                if (Math.random() < 0.005) {
-                    Asteroid asteroid = new Asteroid(WIDTH, HEIGHT);
-                    if (!asteroid.collide(ship)) {
-                        asteroids.add(asteroid);
-                        pane.getChildren().add(asteroid.getCharacter());
-                    }
+                if(characterManager.shipCollisionOccured()) {
+                    stop();
                 }
+                
+                List<Polygon> collidedCharacters = characterManager.getProjectileCollision();
+                if(!(collidedCharacters.isEmpty())) {
+                    text.setText("Points: " + points.addAndGet(1000));
+                    pane.getChildren().removeAll(collidedCharacters);
+                }
+
+                Polygon asteroidCharacter = characterManager.generateAsteroidRandomly();
+                if(asteroidCharacter != null) {
+                    pane.getChildren().add(asteroidCharacter);
+                }
+                
             }
         }.start();
 
         window.setTitle("Asteroids!");
         window.setScene(scene);
         window.show();
-    }
-
-    private void removeCharacter(List<Character> characters, Pane pane) {
-        characters.stream()
-                .filter(character -> !character.isAlive())
-                .forEach(character -> pane.getChildren().remove(character.getCharacter()));
-        characters.removeAll(characters.stream()
-                .filter(character -> !character.isAlive())
-                .collect(Collectors.toList()));
     }
 
 }
