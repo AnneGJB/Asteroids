@@ -7,6 +7,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import com.example.characters.Projectile;
 import com.example.helpers.CharacterManager;
+import com.example.helpers.HighScoreManager;
 
 import javafx.animation.AnimationTimer;
 import javafx.scene.Scene;
@@ -18,6 +19,7 @@ import javafx.scene.text.Text;
 public class Game {
     private int frameWidth;
     private int frameHeight;
+    private HighScoreManager highScoreManager;
     private Scene scene;
     private Map<KeyCode, Boolean> pressedKeys;
     private CharacterManager characterManager;
@@ -26,9 +28,10 @@ public class Game {
     private AtomicInteger points;
     private Runnable gameOverAction;
 
-    public Game(int frameWidth, int frameHeight) {
+    public Game(int frameWidth, int frameHeight, HighScoreManager highScoreManager) {
         this.frameWidth = frameWidth;
         this.frameHeight = frameHeight;
+        this.highScoreManager = highScoreManager;
         this.pressedKeys = new HashMap<>();
         this.characterManager = new CharacterManager(frameWidth, frameHeight);
         this.pane = new Pane();
@@ -65,7 +68,7 @@ public class Game {
 
                 characterManager.moveAllCharacters();
 
-                if (characterManager.shipCollisionOccured()) {
+                if (characterManager.shipHasCollided()) {
                     stop();
                     runGameOver();
                 }
@@ -123,6 +126,7 @@ public class Game {
     }
 
     private void runGameOver() {
+        highScoreManager.setLatestPoints(this.points.get());
         this.gameOverAction.run();
     }
 

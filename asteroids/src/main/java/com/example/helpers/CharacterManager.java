@@ -61,7 +61,7 @@ public class CharacterManager {
         projectiles.forEach(projectile -> projectile.move());
     }
 
-    public boolean shipCollisionOccured() {
+    public boolean shipHasCollided() {
         for (Character asteroid : asteroids) {
             if (ship.collide(asteroid)) {
                 return true;
