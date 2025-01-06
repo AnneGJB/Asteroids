@@ -9,7 +9,7 @@ public class Score {
         this.score = score;
         this.name = name;
     }
-
+ 
     public int getScore() {
         return score;
     }

@@ -15,6 +15,7 @@ public class HighScoreManager {
     private ObservableList<Score> highScores;
     private String filePath;
     private int latestPoints;
+    private static final int NUMBER_OF_HIGH_SCORES = 10;
 
     public HighScoreManager() {
         this.highScores = FXCollections.observableArrayList();
@@ -23,32 +24,33 @@ public class HighScoreManager {
     }
 
     private void extractHighScoresFromFile() {
-        try (Scanner fileScanner = new Scanner(Paths.get(filePath))) {
+        try (Scanner fileScanner = new Scanner(Paths.get(this.filePath))) {
             while (fileScanner.hasNextLine()) {
                 String line = fileScanner.nextLine();
-                if(line.isEmpty()) {
+                if (line.isEmpty()) {
                     break;
                 }
                 String[] highScoreParts = line.split(",");
                 Score score = new Score(Integer.parseInt(highScoreParts[0]), highScoreParts[1]);
                 highScores.add(score);
             }
-            setRanks();
+            
         } catch (IOException exception) {
             System.out.println("Problem with file scanner: ");
             System.out.println(exception.getMessage());
+            
         }
+        while(highScores.size() < NUMBER_OF_HIGH_SCORES) {
+            highScores.add(new Score(0, "---"));
+        }
+        setRanks();
     }
 
-    public void setRanks() {
-        sortHighScores();
-        for(int i = 0; i < 10; i++) {
+    private void setRanks() {
+        highScores.sort((a, b) -> b.getScore() - a.getScore());
+        for (int i = 0; i < NUMBER_OF_HIGH_SCORES; i++) {
             highScores.get(i).setRank(i + 1);
         }
-    }
-
-    private void sortHighScores() {
-        highScores.sort((a, b) -> b.getScore() - a.getScore());
     }
 
     public ObservableList<Score> getHighScores() {
@@ -56,7 +58,7 @@ public class HighScoreManager {
     }
 
     public boolean isHighScore() {
-        return this.latestPoints > highScores.get(9).getScore();
+        return this.latestPoints > highScores.get(highScores.size() - 1).getScore();
     }
 
     public void addScore(String name) {
@@ -64,7 +66,7 @@ public class HighScoreManager {
         highScores.remove(9);
         highScores.add(newScore);
         setRanks();
-        try (PrintWriter writer = new PrintWriter(filePath)) {
+        try (PrintWriter writer = new PrintWriter(this.filePath)) {
             for (Score highScore : highScores) {
                 writer.println(highScore.getScore() + "," + highScore.getName());
             }
@@ -81,6 +83,5 @@ public class HighScoreManager {
     public int getLatestPoints() {
         return this.latestPoints;
     }
-
 
 }

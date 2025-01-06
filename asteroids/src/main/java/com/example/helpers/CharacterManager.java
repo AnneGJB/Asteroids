@@ -1,10 +1,12 @@
 package com.example.helpers;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
 
+import com.example.AsteroidsApplication;
 import com.example.characters.Asteroid;
 import com.example.characters.Ship;
 
@@ -21,9 +23,9 @@ public class CharacterManager {
     List<Character> asteroids;
     List<Character> projectiles;
 
-    public CharacterManager(int frameWidth, int frameHeight) {
-        this.frameWidth = frameWidth;
-        this.frameHeight = frameHeight;
+    public CharacterManager() {
+        this.frameWidth = AsteroidsApplication.WIDTH;
+        this.frameHeight = AsteroidsApplication.HEIGHT;
         this.ship = new Ship(frameWidth / 2, frameHeight / 2);
         this.asteroids = generateStartingAsteroids();
         this.projectiles = new ArrayList<>();
@@ -80,7 +82,7 @@ public class CharacterManager {
                 }
             } 
         }
-        return new ArrayList<>();
+        return Collections.emptyList();
     }
 
     public Polygon generateRandomAsteroid() {

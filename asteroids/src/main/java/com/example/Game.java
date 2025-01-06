@@ -24,40 +24,39 @@ public class Game {
     private Map<KeyCode, Boolean> pressedKeys;
     private CharacterManager characterManager;
     private Pane pane;
-    private Text text;
+    private Text pointsText;
     private AtomicInteger points;
     private Runnable gameOverAction;
 
-    public Game(int frameWidth, int frameHeight, HighScoreManager highScoreManager) {
-        this.frameWidth = frameWidth;
-        this.frameHeight = frameHeight;
+    public Game(HighScoreManager highScoreManager) {
+        this.frameWidth = AsteroidsApplication.WIDTH;
+        this.frameHeight = AsteroidsApplication.HEIGHT;
         this.highScoreManager = highScoreManager;
         this.pressedKeys = new HashMap<>();
-        this.characterManager = new CharacterManager(frameWidth, frameHeight);
+        this.characterManager = new CharacterManager();
         this.pane = new Pane();
-        this.text = new Text(10, 20, "Points: 0");
+        this.pointsText = new Text(10, 20, "Points: 0");
         this.points = new AtomicInteger();
     }
 
     public void start() {
-        pane.setPrefSize(frameWidth, frameHeight);
-        pane.getChildren().add(text);
-        pane.getChildren().add(characterManager.getShipCharacter());
-        pane.getChildren().addAll(characterManager.getAsteroidCharacters());
+        this.pane.setPrefSize(frameWidth, frameHeight);
+        this.pane.getChildren().add(pointsText);
+        this.pane.getChildren().add(characterManager.getShipCharacter());
+        this.pane.getChildren().addAll(characterManager.getAsteroidCharacters());
 
-        Scene scene = new Scene(pane);
+        this.scene = new Scene(pane);
 
-        scene.setOnKeyPressed(event -> {
+        this.scene.setOnKeyPressed(event -> {
             pressedKeys.put(event.getCode(), Boolean.TRUE);
         });
 
-        scene.setOnKeyReleased(event -> {
+        this.scene.setOnKeyReleased(event -> {
             pressedKeys.put(event.getCode(), Boolean.FALSE);
         });
 
         startAnimationTimer();
 
-        this.scene = scene;
     }
 
     private void startAnimationTimer() {
@@ -105,7 +104,7 @@ public class Game {
     private void handleProjectileCollision() {
         List<Polygon> collidedCharacters = characterManager.getProjectileCollision();
         if (!(collidedCharacters.isEmpty())) {
-            text.setText("Points: " + points.addAndGet(1000));
+            pointsText.setText("Points: " + points.addAndGet(1000));
             pane.getChildren().removeAll(collidedCharacters);
         }
     }
