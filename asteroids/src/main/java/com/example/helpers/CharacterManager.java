@@ -26,21 +26,18 @@ public class CharacterManager {
     public CharacterManager() {
         this.frameWidth = AsteroidsApplication.WIDTH;
         this.frameHeight = AsteroidsApplication.HEIGHT;
-        this.ship = new Ship(frameWidth / 2, frameHeight / 2);
-        this.asteroids = generateStartingAsteroids();
+        this.ship = new Ship(this.frameWidth / 2, this.frameHeight / 2);
+        this.asteroids = new ArrayList<>();
         this.projectiles = new ArrayList<>();
+        generateStartingAsteroids();
     }
 
-    private List<Character> generateStartingAsteroids() {
-        List<Character> asteroids = new ArrayList<>();
-
+    private void generateStartingAsteroids() {
         for (int i = 0; i < 5; i++) {
             Random random = new Random();
             Asteroid asteroid = new Asteroid(random.nextInt(this.frameWidth / 3), random.nextInt(this.frameHeight));
-            asteroids.add(asteroid);
+            this.asteroids.add(asteroid);
         }
-
-        return asteroids;
     }
 
     public Projectile generateProjectile() {
@@ -49,7 +46,7 @@ public class CharacterManager {
                 (int) getShipCharacter().getTranslateY());
 
         projectile.getCharacter().setRotate(getShipCharacter().getRotate());
-        projectiles.add(projectile);
+        this.projectiles.add(projectile);
 
         projectile.accelerate();
         projectile.setMovement(projectile.getMovement().normalize().multiply(3));
@@ -58,14 +55,14 @@ public class CharacterManager {
     }
 
     public void moveAllCharacters() {
-        ship.move();
-        asteroids.forEach(asteroid -> asteroid.move());
-        projectiles.forEach(projectile -> projectile.move());
+        this.ship.move();
+        this.asteroids.forEach(asteroid -> asteroid.move());
+        this.projectiles.forEach(projectile -> projectile.move());
     }
 
     public boolean shipHasCollided() {
-        for (Character asteroid : asteroids) {
-            if (ship.collide(asteroid)) {
+        for (Character asteroid : this.asteroids) {
+            if (this.ship.collide(asteroid)) {
                 return true;
             }
         }
@@ -73,14 +70,14 @@ public class CharacterManager {
     }
 
     public List<Polygon> getProjectileCollision() {
-        for (Character projectile : projectiles) {
-            for (Character asteroid : asteroids) {
+        for (Character projectile : this.projectiles) {
+            for (Character asteroid : this.asteroids) {
                 if (projectile.collide(asteroid)) {
-                    projectiles.remove(projectile);
-                    asteroids.remove(asteroid);
+                    this.projectiles.remove(projectile);
+                    this.asteroids.remove(asteroid);
                     return List.of(projectile.getCharacter(), asteroid.getCharacter());
                 }
-            } 
+            }
         }
         return Collections.emptyList();
     }
@@ -88,8 +85,8 @@ public class CharacterManager {
     public Polygon generateRandomAsteroid() {
         if (Math.random() < 0.005) {
             Asteroid asteroid = new Asteroid(this.frameWidth, this.frameHeight);
-            if (!asteroid.collide(ship)) {
-                asteroids.add(asteroid);
+            if (!asteroid.collide(this.ship)) {
+                this.asteroids.add(asteroid);
                 return asteroid.getCharacter();
             }
         }

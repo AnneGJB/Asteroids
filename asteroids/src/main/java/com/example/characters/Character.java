@@ -30,19 +30,19 @@ public abstract class Character {
         this.character.setTranslateX(this.character.getTranslateX() + this.movement.getX());
         this.character.setTranslateY(this.character.getTranslateY() + this.movement.getY());
 
-        if(this.character.getTranslateX() < 0) {
+        if (this.character.getTranslateX() < 0) {
             this.character.setTranslateX(this.character.getTranslateX() + AsteroidsApplication.WIDTH);
         }
 
-        if(this.character.getTranslateX() > AsteroidsApplication.WIDTH) {
+        if (this.character.getTranslateX() > AsteroidsApplication.WIDTH) {
             this.character.setTranslateX(0);
         }
 
-        if(this.character.getTranslateY() < 0) {
+        if (this.character.getTranslateY() < 0) {
             this.character.setTranslateY(this.character.getTranslateY() + AsteroidsApplication.HEIGHT);
         }
 
-        if(this.character.getTranslateY() > AsteroidsApplication.HEIGHT) {
+        if (this.character.getTranslateY() > AsteroidsApplication.HEIGHT) {
             this.character.setTranslateY(0);
         }
     }
@@ -66,7 +66,6 @@ public abstract class Character {
         return collisionArea.getBoundsInLocal().getWidth() != -1;
     }
 
-    
     public Polygon getCharacter() {
         return this.character;
     }

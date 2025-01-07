@@ -16,7 +16,6 @@ public class AsteroidsApplication extends Application {
     public void start(Stage window) {
         UserInterface userInterface = new UserInterface(window);
         
-
         window.setTitle("Asteroids!");
         window.setScene(userInterface.getStartScene());
         window.show();

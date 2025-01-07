@@ -40,19 +40,19 @@ public class Game {
     }
 
     public void start() {
-        this.pane.setPrefSize(frameWidth, frameHeight);
-        this.pane.getChildren().add(pointsText);
-        this.pane.getChildren().add(characterManager.getShipCharacter());
-        this.pane.getChildren().addAll(characterManager.getAsteroidCharacters());
+        this.pane.setPrefSize(this.frameWidth, this.frameHeight);
+        this.pane.getChildren().add(this.pointsText);
+        this.pane.getChildren().add(this.characterManager.getShipCharacter());
+        this.pane.getChildren().addAll(this.characterManager.getAsteroidCharacters());
 
-        this.scene = new Scene(pane);
+        this.scene = new Scene(this.pane);
 
         this.scene.setOnKeyPressed(event -> {
-            pressedKeys.put(event.getCode(), Boolean.TRUE);
+            this.pressedKeys.put(event.getCode(), Boolean.TRUE);
         });
 
         this.scene.setOnKeyReleased(event -> {
-            pressedKeys.put(event.getCode(), Boolean.FALSE);
+            this.pressedKeys.put(event.getCode(), Boolean.FALSE);
         });
 
         startAnimationTimer();
@@ -79,40 +79,40 @@ public class Game {
     }
 
     private void handleKeyPress() {
-        if (pressedKeys.getOrDefault(KeyCode.LEFT, false)) {
-            characterManager.turnShipLeft();
+        if (this.pressedKeys.getOrDefault(KeyCode.LEFT, false)) {
+            this.characterManager.turnShipLeft();
         }
 
-        if (pressedKeys.getOrDefault(KeyCode.RIGHT, false)) {
-            characterManager.turnShipRight();
+        if (this.pressedKeys.getOrDefault(KeyCode.RIGHT, false)) {
+            this.characterManager.turnShipRight();
         }
 
-        if (pressedKeys.getOrDefault(KeyCode.UP, false)) {
-            characterManager.accelerateShip();
+        if (this.pressedKeys.getOrDefault(KeyCode.UP, false)) {
+            this.characterManager.accelerateShip();
         }
 
-        if (pressedKeys.getOrDefault(KeyCode.DOWN, false)) {
-            characterManager.decelerateShip();
+        if (this.pressedKeys.getOrDefault(KeyCode.DOWN, false)) {
+            this.characterManager.decelerateShip();
         }
 
-        if (pressedKeys.getOrDefault(KeyCode.SPACE, false) && characterManager.getProjectiles().size() < 3) {
-            Projectile projectile = characterManager.generateProjectile();
+        if (this.pressedKeys.getOrDefault(KeyCode.SPACE, false) && this.characterManager.getProjectiles().size() < 3) {
+            Projectile projectile = this.characterManager.generateProjectile();
             this.pane.getChildren().add(projectile.getCharacter());
         }
     }
 
     private void handleProjectileCollision() {
-        List<Polygon> collidedCharacters = characterManager.getProjectileCollision();
+        List<Polygon> collidedCharacters = this.characterManager.getProjectileCollision();
         if (!(collidedCharacters.isEmpty())) {
-            pointsText.setText("Points: " + points.addAndGet(1000));
-            pane.getChildren().removeAll(collidedCharacters);
+            this.pointsText.setText("Points: " + this.points.addAndGet(1000));
+            this.pane.getChildren().removeAll(collidedCharacters);
         }
     }
 
     private void addRandomAsteroid() {
-        Polygon asteroidCharacter = characterManager.generateRandomAsteroid();
+        Polygon asteroidCharacter = this.characterManager.generateRandomAsteroid();
         if (asteroidCharacter != null) {
-            pane.getChildren().add(asteroidCharacter);
+            this.pane.getChildren().add(asteroidCharacter);
         }
     }
 
@@ -125,7 +125,7 @@ public class Game {
     }
 
     private void runGameOver() {
-        highScoreManager.setLatestPoints(this.points.get());
+        this.highScoreManager.setLatestPoints(this.points.get());
         this.gameOverAction.run();
     }
 

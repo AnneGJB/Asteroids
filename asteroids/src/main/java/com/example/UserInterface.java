@@ -21,10 +21,10 @@ public class UserInterface {
     private int width;
     private int height;
     private Stage window;
+    private HighScoreManager highScoreManager;
     private Scene startScene;
     private Scene endScene;
     private Scene greatScoreScene;
-    private HighScoreManager highScoreManager;
     private Game game;
 
     public UserInterface(Stage window) {
@@ -40,12 +40,13 @@ public class UserInterface {
     private void createStartScene() {
         BorderPane startLayout = new BorderPane();
         startLayout.setPrefSize(this.width, this.height);
+
         Button startButton = new Button("Start");
         startButton.setOnAction(event -> {
             startGame();
         });
-        startLayout.setCenter(startButton);
 
+        startLayout.setCenter(startButton);
         this.startScene = new Scene(startLayout);
     }
 
@@ -60,9 +61,7 @@ public class UserInterface {
         table.setMaxHeight(this.height * 0.68);
 
         Button tryAgainButton = new Button("Try again");
-        tryAgainButton.setOnAction(event -> {
-            startGame();
-        });
+        tryAgainButton.setOnAction(event -> startGame());
 
         VBox endInterface = new VBox();
         endInterface.getChildren().setAll(table, tryAgainButton);
@@ -83,9 +82,9 @@ public class UserInterface {
         TextField greatScoreTextField = new TextField();
         Button greatScoreButton = new Button("Submit");
         greatScoreButton.setOnAction(event -> {
-            highScoreManager.addScore(greatScoreTextField.getText());
+            this.highScoreManager.addScore(greatScoreTextField.getText());
             greatScoreTextField.setText("");
-            window.setScene(endScene);
+            this.window.setScene(this.endScene);
         });
         greatScoreInputBox.getChildren().addAll(greatScoreNameLabel, greatScoreTextField, greatScoreButton);
 
@@ -99,20 +98,20 @@ public class UserInterface {
     }
 
     private void startGame() {
-        this.game = new Game(highScoreManager);
-        game.setOnGameOver(() -> {
-            if (highScoreManager.isHighScore()) {
-                window.setScene(this.greatScoreScene);
+        this.game = new Game(this.highScoreManager);
+        this.game.setOnGameOver(() -> {
+            if (this.highScoreManager.isHighScore()) {
+                this.window.setScene(this.greatScoreScene);
             } else {
-                window.setScene(this.endScene);
+                this.window.setScene(this.endScene);
             }
         });
-        game.start();
-        window.setScene(game.getScene());
+        this.game.start();
+        this.window.setScene(this.game.getScene());
     }
 
     private TableView<Score> getHighScoreTable() {
-        ObservableList<Score> highScores = highScoreManager.getHighScores();
+        ObservableList<Score> highScores = this.highScoreManager.getHighScores();
 
         TableView<Score> table = new TableView<>();
         table.setItems(highScores);

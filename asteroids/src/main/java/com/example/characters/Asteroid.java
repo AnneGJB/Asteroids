@@ -4,7 +4,7 @@ import java.util.Random;
 
 import com.example.helpers.PolygonFactory;
 
-public class Asteroid extends Character{
+public class Asteroid extends Character {
     private double rotationalMovement;
 
     public Asteroid(int x, int y) {
@@ -15,7 +15,7 @@ public class Asteroid extends Character{
         super.getCharacter().setRotate(random.nextInt(360));
 
         int accelerationAmount = 1 + random.nextInt(10);
-        for(int i = 0; i < accelerationAmount; i++) {
+        for (int i = 0; i < accelerationAmount; i++) {
             accelerate();
         }
 
@@ -25,9 +25,7 @@ public class Asteroid extends Character{
     @Override
     public void move() {
         super.move();
-        super.getCharacter().setRotate(super.getCharacter().getRotate() + rotationalMovement);
+        super.getCharacter().setRotate(super.getCharacter().getRotate() + this.rotationalMovement);
     }
-
-
 
 }
